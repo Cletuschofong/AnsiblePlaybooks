@@ -1,0 +1,117 @@
+#Ansible playbook to install Nginx on two Ubuntu servers and two Red Hat servers, assuming the group names are "ubuntu" and "redhat" respectively:
+
+ 
+
+---
+- name: Install Nginx on Ubuntu and Red Hat servers
+  hosts: ubuntu:redhat
+  become: true
+  
+  tasks:
+    - name: Update apt or yum cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+      
+    - name: Update apt or yum cache
+      yum:
+        update_cache: yes
+      when: ansible_os_family == 'RedHat'
+    
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+      when: ansible_os_family == 'Debian'
+      
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: latest
+      when: ansible_os_family == 'RedHat'
+
+
+=================================================================================
+#Ansible playbook to install Apache HTTP server on servers and start it on both Ubuntu and Red Hat servers:
+
+
+
+
+
+---
+- name: Install and start Apache HTTP server on Ubuntu and Red Hat servers
+  hosts: ubuntu:redhat
+  become: true
+  
+  tasks:
+    - name: Update apt or yum cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+      
+    - name: Update apt or yum cache
+      yum:
+        update_cache: yes
+      when: ansible_os_family == 'RedHat'
+    
+    - name: Install Apache HTTP server
+      apt:
+        name: apache2
+        state: latest
+      when: ansible_os_family == 'Debian'
+      
+    - name: Install Apache HTTP server
+      yum:
+        name: httpd
+        state: latest
+      when: ansible_os_family == 'RedHat'
+      
+    - name: Start Apache HTTP server
+      service:
+        name: apache2
+        state: started
+      when: ansible_os_family == 'Debian'
+      
+    - name: Start Apache HTTP server
+      service:
+        name: httpd
+        state: started
+      when: ansible_os_family == 'RedHat'
+
+
+
+==========================================================================
+
+# Ansible playbook to uninstall Apache HTTP server on servers and stop it on both Ubuntu and Red Hat servers:
+
+
+
+---
+- name: Uninstall and stop Apache HTTP server on Ubuntu and Red Hat servers
+  hosts: ubuntu:redhat
+  become: true
+  
+  tasks:
+    - name: Stop Apache HTTP server
+      service:
+        name: apache2
+        state: stopped
+      when: ansible_os_family == 'Debian'
+      
+    - name: Stop Apache HTTP server
+      service:
+        name: httpd
+        state: stopped
+      when: ansible_os_family == 'RedHat'
+
+    - name: Uninstall Apache HTTP server
+      apt:
+        name: apache2
+        state: absent
+      when: ansible_os_family == 'Debian'
+
+    - name: Uninstall Apache HTTP server
+      yum:
+        name: httpd
+        state: absent
+      when: ansible_os_family == 'RedHat'
